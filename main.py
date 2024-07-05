@@ -7,6 +7,7 @@ BOOKS_DIR = "./books"
 
 # Load the spacy instance.
 nlp = spacy.load('en_core_web_sm')
+nlp.max_length = 99999999999
 
 # Disable spacy warnings and only show errors (if any).
 logger = logging.getLogger("spacy")
@@ -19,7 +20,7 @@ def read_and_process(path: str):
     """
 
     with open(path, 'r', encoding='utf-8') as file:
-        doc = file.read(1000000)
+        doc = file.read()
 
     return nlp(doc)
 
@@ -32,12 +33,22 @@ for index, book in enumerate(books):
 
 # Ask user to choose a book as source file.
 chosen_index = int(input(f"\nSelect a book [0-{len(books)-1}]: "))
+chosen_book = books[chosen_index]
 
 # Read an process the source book.
-main_doc = read_and_process(f'{BOOKS_DIR}/{books[chosen_index]}')
+print(f"Processing '{chosen_book}'...")
+main_doc = read_and_process(f'{BOOKS_DIR}/{chosen_book}')
+
+# Remove the chosen book from the list.
+books.pop(chosen_index)
 
 # Read all books and compare them with the source book.
 for book in books:
+    print(f"Processing '{book}'...")
     doc = read_and_process(f'{BOOKS_DIR}/{book}')
 
-    print(main_doc.similarity(doc))
+
+    similarity = main_doc.similarity(doc)
+    similarity_percentage = int(similarity * 100)
+
+    print(f"{similarity_percentage}% of similarity between {chosen_book} and {book}")
