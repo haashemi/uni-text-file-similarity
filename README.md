@@ -1,2 +1,4 @@
 # uni-text-file-similarity
- 🎓 University Project: Text file similarity detection
+
+ TODO: Write a readme before archiving the repo.
+ 
